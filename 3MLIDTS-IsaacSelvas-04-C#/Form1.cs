@@ -20,10 +20,10 @@ namespace _3MLIDTS_IsaacSelvas_04_C_
         {
             InitializeComponent();
             tboxEdad.TextChanged += ValidarEdad;
-            //tboxApellidos.TextChanged += ValidarApellidos;
-            //tboxNombre.TextChanged += ValidarNombre;
-            //tboxEstatura.TextChanged += ValidarEstatura;
-            //tboxTelefono.Leave += ValidarTelefono;
+            tboxApellidos.TextChanged += ValidarString;
+            tboxNombre.TextChanged += ValidarString;
+            tboxEstatura.TextChanged += ValidarEstatura;
+            tboxTelefono.Leave += ValidarTelefono;
         }
 
         private void ValidarEdad(object sender, EventArgs e)
@@ -36,10 +36,54 @@ namespace _3MLIDTS_IsaacSelvas_04_C_
             }
         }
 
+        private void ValidarString(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (StringValido(textbox.Text))
+            {
+                MessageBox.Show("Ingrese valores correctos en Nombre o Apellido",
+                    "Error Nombre/Apellido", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ValidarEstatura(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (!FloatValido(textbox.Text))
+            {
+                MessageBox.Show("Ingrese valores correctos para la estatura",
+                    "Error Estatura", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ValidarTelefono(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            bool soloNumeros = textbox.Text.All(char.IsDigit);
+            bool longitudCorrecta = textbox.Text.Length == 10;
+            if (StringValido(textbox.Text) || !soloNumeros || !longitudCorrecta)
+            {
+                MessageBox.Show("Ingrese un numero de Telefono valido",
+                    "Error Telefono", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
         private bool EnteroValido(String valor)
         {
             int resultado;
             return int.TryParse(valor, out resultado);
+        }
+
+        private bool StringValido(String valor)
+        {
+            return string.IsNullOrWhiteSpace(valor);
+        }
+
+        private bool FloatValido(String valor)
+        {
+            float resultado;
+            return float.TryParse(valor, out resultado);
         }
 
 
