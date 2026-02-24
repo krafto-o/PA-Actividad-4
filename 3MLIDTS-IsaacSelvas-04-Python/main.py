@@ -57,7 +57,7 @@ def guardar():
                  f"Edad: {edad}\nTelefono: {tel}\n"
                  f"Estatura: {estatura}\nGenero: {genero}")
         
-        with open("Datos3N_13Feb26.txt", "a") as archivo:
+        with open("Datos3N_23Feb26.txt", "a") as archivo:
             archivo.write(datos + "\n\n")
             
         messagebox.showinfo("Informacion", "Datos guardados correctamente\n\n" + datos)
