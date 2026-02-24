@@ -133,7 +133,7 @@ namespace _3MLIDTS_IsaacSelvas_04_C_
             }
 
             string datos = $"Nombres: {nombre}\r\n " + $"Apellidos: {apellidos}\r\n" + $"Edad: {edad}\r\n" + $"Estatura: {estatura}\r\n" + $"Telefono: {telefono}\r\n" + $"Genero: {genero}\r\n";
-            string rutaArchivo = "C:\\Users\\kv\\source\\repos\\3MLIDTS-IsaacSelvas-04-C#\\3MLIDTS-IsaacSelvas-04-C#\\3M_Datos_20261102.txt";
+            string rutaArchivo = @"C:\Users\Public\Documents\3M_Datos_20260223.txt";
             bool archivoExiste = File.Exists(rutaArchivo);
             using (StreamWriter escritor = new StreamWriter(rutaArchivo, true))
             {
