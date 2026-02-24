@@ -1,7 +1,30 @@
 import tkinter as tk
 from tkinter import messagebox
+import re
 
-# Función para limpiar los campos del formulario
+# Funciones de Validación
+def EnteroValido(valor):
+    try:
+        int(valor)
+        return True
+    except ValueError:
+        return False
+
+def DecimalValido(valor):
+    try:
+        float(valor)
+        return True
+    except ValueError:
+        return False
+
+def TelefonoValido(valor):
+    # Verifica que sean solo dígitos y tenga longitud de 10
+    return valor.isdigit() and len(valor) == 10
+
+def TextoValido(valor):
+    # Verifica que solo contenga letras y espacios
+    return bool(re.match("^[a-zA-Z\\s]+$", valor))
+
 def borrar():
     tbNombre.delete(0, tk.END)
     tbApellidos.delete(0, tk.END)
@@ -10,7 +33,6 @@ def borrar():
     tbEstatura.delete(0, tk.END)
     rbSeleccionGenero.set(0)
 
-# Función para guardar los datos en un archivo de texto
 def guardar():
     nombres = tbNombre.get()
     apellidos = tbApellidos.get()
@@ -18,87 +40,70 @@ def guardar():
     tel = tbTelefono.get()
     estatura = tbEstatura.get()
     
-    # Determinar el género seleccionado
     genero = ""
-    seleccion = rbSeleccionGenero.get()
-    if seleccion == 1:
+    if rbSeleccionGenero.get() == 1:
         genero = "Masculino"
-    elif seleccion == 2:
+    elif rbSeleccionGenero.get() == 2:
         genero = "Femenino"
-    elif seleccion == 3:
+    elif rbSeleccionGenero.get() == 3:
         genero = "No Definido"
 
-    # Preparar la cadena de datos para el archivo
-    datos = (f"Nombre: {nombres}\n"
-             f"Apellidos: {apellidos}\n"
-             f"Edad: {edad}\n"
-             f"Telefono: {tel}\n"
-             f"Estatura: {estatura}\n"
-             f"Genero: {genero}")
-
-    # Guardar en el archivo .txt
-    try:
+    # Verificación de todas las validaciones antes de guardar
+    if (EnteroValido(edad) and DecimalValido(estatura) and 
+        TelefonoValido(tel) and TextoValido(nombres) and 
+        TextoValido(apellidos)):
+        
+        datos = (f"Nombre: {nombres}\nApellidos: {apellidos}\n"
+                 f"Edad: {edad}\nTelefono: {tel}\n"
+                 f"Estatura: {estatura}\nGenero: {genero}")
+        
         with open("Datos3N_13Feb26.txt", "a") as archivo:
             archivo.write(datos + "\n\n")
-        
-        # Mostrar mensaje de éxito
-        messagebox.showinfo("Información", "Datos guardados correctamente\n\n" + datos)
-    except Exception as e:
-        messagebox.showerror("Error", f"No se pudo guardar el archivo: {e}")
+            
+        messagebox.showinfo("Informacion", "Datos guardados correctamente\n\n" + datos)
+    else:
+        messagebox.showerror("Error", "Algunos de los campos tienen formato equivocado")
 
-# Configuración de la ventana principal
+# Interfaz Gráfica
 ventana = tk.Tk()
 ventana.configure(bg="#9dceea")
-ventana.geometry("350x650") # Ajusté un poco el alto para que quepa todo bien
-ventana.title("Actividad 04 Formulario de Registro Vr. 001")
+ventana.geometry("350x600")
+ventana.title("Actividad 04 Formulario de Registro Vr. 002")
 
-# Variable para los RadioButtons
 rbSeleccionGenero = tk.IntVar()
 
-# --- Diseño de la Interfaz ---
-
-# Nombre
-tk.Label(ventana, text="Nombre:", font=("Segoe UI", 14, "bold"), bg="#9dceea").pack(pady=(10, 0))
+# Elementos de la interfaz
+tk.Label(ventana, text="Nombre:", font=("Jet Brains Mono Nerd", 12, "bold"), bg="#9dceea").pack(pady=5)
 tbNombre = tk.Entry(ventana, width=35, justify="center")
-tbNombre.pack(pady=5)
+tbNombre.pack()
 
-# Apellidos
-tk.Label(ventana, text="Apellidos:", font=("Segoe UI", 14, "bold"), bg="#9dceea").pack(pady=(10, 0))
+tk.Label(ventana, text="Apellidos:", font=("Jet Brains Mono Nerd", 12, "bold"), bg="#9dceea").pack(pady=5)
 tbApellidos = tk.Entry(ventana, width=35, justify="center")
-tbApellidos.pack(pady=5)
+tbApellidos.pack()
 
-# Edad
-tk.Label(ventana, text="Edad:", font=("Segoe UI", 14, "bold"), bg="#9dceea").pack(pady=(10, 0))
+tk.Label(ventana, text="Edad:", font=("Jet Brains Mono Nerd", 12, "bold"), bg="#9dceea").pack(pady=5)
 tbEdad = tk.Entry(ventana, width=10, justify="center")
-tbEdad.pack(pady=5)
+tbEdad.pack()
 
-# Estatura
-tk.Label(ventana, text="Estatura:", font=("Segoe UI", 14, "bold"), bg="#9dceea").pack(pady=(10, 0))
+tk.Label(ventana, text="Estatura:", font=("Jet Brains Mono Nerd", 12, "bold"), bg="#9dceea").pack(pady=5)
 tbEstatura = tk.Entry(ventana, width=15, justify="center")
-tbEstatura.pack(pady=5)
+tbEstatura.pack()
 
-# Teléfono
-tk.Label(ventana, text="Teléfono:", font=("Segoe UI", 14, "bold"), bg="#9dceea").pack(pady=(10, 0))
+tk.Label(ventana, text="Telefono:", font=("Jet Brains Mono Nerd", 12, "bold"), bg="#9dceea").pack(pady=5)
 tbTelefono = tk.Entry(ventana, width=35, justify="center")
-tbTelefono.pack(pady=5)
+tbTelefono.pack()
 
-# Grupo de Género
-gb = tk.LabelFrame(ventana, text="Seleccione un Género:", padx=10, pady=8, bg="#9dceea")
-gb.pack(padx=10, pady=15)
+# Grupo Género
+gb = tk.LabelFrame(ventana, text="Seleccione un Genero", padx=10, pady=8, bg="#9dceea")
+gb.pack(pady=15)
+tk.Radiobutton(gb, text="Masculino", value=1, variable=rbSeleccionGenero, bg="#9dceea").grid(row=0, column=0)
+tk.Radiobutton(gb, text="Femenino", value=2, variable=rbSeleccionGenero, bg="#9dceea").grid(row=0, column=1)
+tk.Radiobutton(gb, text="No Definido", value=3, variable=rbSeleccionGenero, bg="#9dceea").grid(row=0, column=2)
 
-tk.Radiobutton(gb, text="Masculino", value=1, variable=rbSeleccionGenero, bg="#9dceea").grid(column=1, row=1)
-tk.Radiobutton(gb, text="Femenino", value=2, variable=rbSeleccionGenero, bg="#9dceea").grid(column=2, row=1)
-tk.Radiobutton(gb, text="No Definido", value=3, variable=rbSeleccionGenero, bg="#9dceea").grid(column=3, row=1)
+# Botones
+btnGuardar = tk.Button(ventana, text="Guardar", width=15, command=guardar)
+btnGuardar.pack(pady=5)
+btnBorrar = tk.Button(ventana, text="Borrar", width=15, command=borrar)
+btnBorrar.pack(pady=5)
 
-# Grupo de Botones
-gb2 = tk.Frame(ventana, bg="#9dceea")
-gb2.pack(pady=20)
-
-btnGuardar = tk.Button(gb2, text="Guardar", width=10, command=guardar)
-btnGuardar.grid(column=1, row=1, padx=10)
-
-btnBorrar = tk.Button(gb2, text="Borrar", width=10, command=borrar)
-btnBorrar.grid(column=2, row=1, padx=10)
-
-# Iniciar la aplicación
 ventana.mainloop()
