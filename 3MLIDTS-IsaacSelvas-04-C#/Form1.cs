@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 
 
 namespace _3MLIDTS_IsaacSelvas_04_C_
@@ -20,8 +21,8 @@ namespace _3MLIDTS_IsaacSelvas_04_C_
         {
             InitializeComponent();
             tboxEdad.TextChanged += ValidarEdad;
-            tboxApellidos.TextChanged += ValidarString;
-            tboxNombre.TextChanged += ValidarString;
+            tboxApellidos.TextChanged += ValidarApellidos;
+            tboxNombre.TextChanged += ValidarNombre;
             tboxEstatura.TextChanged += ValidarEstatura;
             tboxTelefono.Leave += ValidarTelefono;
         }
@@ -36,35 +37,55 @@ namespace _3MLIDTS_IsaacSelvas_04_C_
             }
         }
 
-        private void ValidarString(object sender, EventArgs e)
+        private void ValidarNombre(object sender, EventArgs e)
         {
-            TextBox textbox = (TextBox)sender;
-            if (StringValido(textbox.Text))
+            TextBox cajaNombre = (TextBox)sender;
+            if (!EsTextoValido(cajaNombre.Text))
             {
-                MessageBox.Show("Ingrese valores correctos en Nombre o Apellido",
-                    "Error Nombre/Apellido", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Ingrese valores correctos para el Nombre", "Error Nombre", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cajaNombre.Clear();
+            }
+        }
+
+        private void ValidarApellidos(object sender, EventArgs e)
+        {
+            TextBox cajaApellidos = (TextBox)sender;
+            if (!EsTextoValido(cajaApellidos.Text))
+            {
+                MessageBox.Show("Ingrese valores correctos para el apellido", "Error Apellido", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cajaApellidos.Clear();
             }
         }
 
         private void ValidarEstatura(object sender, EventArgs e)
         {
-            TextBox textbox = (TextBox)sender;
-            if (!FloatValido(textbox.Text))
+            TextBox textBoxEstatura = (TextBox)sender;
+            if (!EsFlotanteValido(textBoxEstatura.Text))
             {
-                MessageBox.Show("Ingrese valores correctos para la estatura",
-                    "Error Estatura", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Ingrese valores correctos para la estatura", "Error Estatura", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxEstatura.Clear();
             }
         }
 
         private void ValidarTelefono(object sender, EventArgs e)
         {
-            TextBox textbox = (TextBox)sender;
-            bool soloNumeros = textbox.Text.All(char.IsDigit);
-            bool longitudCorrecta = textbox.Text.Length == 10;
-            if (StringValido(textbox.Text) || !soloNumeros || !longitudCorrecta)
+            TextBox textBox = (TextBox)sender;
+            string input = textBox.Text;
+
+            if (input.Length > 10)
             {
-                MessageBox.Show("Ingrese un numero de Telefono valido",
-                    "Error Telefono", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!EsEnteroValidoDe10Digitos(input))
+                {
+                    textBox.BackColor = Color.Red;
+                }
+            }
+            else if (!EsEnteroValidoDe10Digitos(input))
+            {
+                textBox.BackColor = Color.Yellow;
+            }
+            else
+            {
+                textBox.BackColor = Color.SeaGreen;
             }
         }
 
@@ -75,12 +96,18 @@ namespace _3MLIDTS_IsaacSelvas_04_C_
             return int.TryParse(valor, out resultado);
         }
 
-        private bool StringValido(String valor)
+        private bool EsEnteroValidoDe10Digitos(string valor)
         {
-            return string.IsNullOrWhiteSpace(valor);
+            long resultado;
+            return long.TryParse(valor, out resultado) && valor.Length == 10;
         }
 
-        private bool FloatValido(String valor)
+        private bool EsTextoValido(string valor)
+        {
+            return Regex.IsMatch(valor, @"^[a-zA-Z\s]+$");
+        }
+
+        private bool EsFlotanteValido(String valor)
         {
             float resultado;
             return float.TryParse(valor, out resultado);
